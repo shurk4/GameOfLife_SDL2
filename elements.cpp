@@ -16,52 +16,86 @@ Element::~Element()
 {
     std::cout << "Element::~Element" << std::endl;
 
+    std::cout << "Element::~Element font" << std::endl;
+        // SDL_Destroy
+    TTF_CloseFont(font);
+
+    std::cout << "Element::~Element textSurface" << std::endl;
+    SDL_FreeSurface(textSurface);
+
+    std::cout << "Element::~Element textTexture" << std::endl;
+    SDL_DestroyTexture(textTexture);
+    // delete textTexture;
+
+    std::cout << "Element::~Element hoverFont text: " << text << std::endl;
+    TTF_CloseFont(hoverFont);
+
+    std::cout << "Element::~Element bgTex" << std::endl;
+    SDL_DestroyTexture(bgTex);
+
+    std::cout << "Element::~Element bgTexHovered" << std::endl;
+    SDL_DestroyTexture(bgTexHovered);
+    // delete bgTexHovered;
+
+    std::cout << "Element::~Element bgTexPressed" << std::endl;
+    SDL_DestroyTexture(bgTexPressed);
+    // delete bgTexPressed;
+
+    // try
+    // {
+
+
+    // } catch (...)
+    // {
+    //     std::cout << "LOL !!!" << std::endl;
+    // }
+
     // if(font != nullptr)
     // {
     //     std::cout << "Element::~Element font" << std::endl;
     //         // SDL_Destroy
-    //     delete font;
+    //     TTF_CloseFont(font);
     // }
 
-    if(textSurface != nullptr)
-    {
-        std::cout << "Element::~Element textSurface" << std::endl;
-        delete textSurface;
-    }
+    // if(textSurface != nullptr)
+    // {
+    //     std::cout << "Element::~Element textSurface" << std::endl;
+    //     SDL_FreeSurface(textSurface);
+    // }
 
-    if(textTexture != nullptr)
-    {
-        std::cout << "Element::~Element textTexture" << std::endl;
-        SDL_DestroyTexture(textTexture);
-        // delete textTexture;
-    }
+    // if(textTexture != nullptr)
+    // {
+    //     std::cout << "Element::~Element textTexture" << std::endl;
+    //     SDL_DestroyTexture(textTexture);
+    //     // delete textTexture;
+    // }
 
     // if(hoverFont != nullptr)
     // {
-    //     std::cout << "Element::~Element hoverFont" << std::endl;
-    //     delete hoverFont;
+    //     std::cout << "Element::~Element hoverFont text: " << text << std::endl;
+    //     TTF_CloseFont(hoverFont);
     // }
 
-    if(bgTex != nullptr)
-    {
-        std::cout << "Element::~Element bgTex" << std::endl;
-        SDL_DestroyTexture(bgTex);
-        // delete bgTex;
-    }
+    // if(bgTex != nullptr)
+    // {
+    //     std::cout << "Element::~Element bgTex" << std::endl;
+    //     SDL_DestroyTexture(bgTex);
+    // }
 
-    if(bgTex != nullptr)
-    {
-        std::cout << "Element::~Element bgTexHovered" << std::endl;
-        SDL_DestroyTexture(bgTexHovered);
-        // delete bgTexHovered;
-    }
+    // if(bgTex != nullptr)
+    // {
+    //     std::cout << "Element::~Element bgTexHovered" << std::endl;
+    //     SDL_DestroyTexture(bgTexHovered);
+    //     // delete bgTexHovered;
+    // }
 
-    if(bgTex != nullptr)
-    {
-        std::cout << "Element::~Element bgTexPressed" << std::endl;
-        SDL_DestroyTexture(bgTexPressed);
-        // delete bgTexPressed;
-    }
+    // if(bgTex != nullptr)
+    // {
+    //     std::cout << "Element::~Element bgTexPressed" << std::endl;
+    //     SDL_DestroyTexture(bgTexPressed);
+    //     // delete bgTexPressed;
+    // }
+    std::cout << "Element::~Element DONE" << std::endl;
 }
 
 void Element::setPos(const int &_xPos, const int &_yPos)
@@ -211,12 +245,12 @@ Cell::~Cell()
 {
     std::cout << "Cell::~Cell " << std::endl;
 
-    // if(spritesTextures != nullptr)
-    // {
-    //     std::cout << "Cell::~Cell spritesTextures" << std::endl;
-    //     delete spritesTextures;
-    // }
-    // // Element::~Element();
+    if(spritesTextures != nullptr)
+    {
+        std::cout << "Cell::~Cell spritesTextures" << std::endl;
+        SDL_DestroyTexture(spritesTextures);
+    }
+    // Element::~Element();
     std::cout << "Cell::~Cell END" << std::endl;
 }
 

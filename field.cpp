@@ -70,7 +70,11 @@ void Field::showCells(const std::map<int, std::set<int> > &_cells)
                 x = xCell->first;
                 y = *yCell;
 
-                // std::cout << "Field::showCells check changes x: " << x << " y: " << y << std::endl;
+                if(x < 0 || x > fieldXCells || y < 0 || y > fieldYCells)
+                {
+                    std::cout << "---   Cell position number wrong x: " << x << " y: " << y << std::endl;
+                    continue;
+                }
 
                 if(cellsMap.find(x) != cellsMap.end() && cellsMap.at(x).count(y))
                 {
@@ -78,6 +82,14 @@ void Field::showCells(const std::map<int, std::set<int> > &_cells)
                 else
                 {
                     std::pair<int, int> cellCoords = getCellCoords(x, y);
+
+
+
+                    if(cellCoords.first < fieldXPos_start || cellCoords.first > fieldXPos_end || cellCoords.second < fieldYPos_start || cellCoords.second > fieldYPos_end)
+                    {
+                        std::cout << "---   Cell position coords wrong cellCoords.first: " << cellCoords.first << " cellCoords.second: " << cellCoords.second << std::endl;
+                        continue;
+                    }
 
                     // Анимированные клетки
                     std::shared_ptr<Cell>cell(new Cell(cellCoords.first, cellCoords.second, cellXSize, cellYSize, renderer));

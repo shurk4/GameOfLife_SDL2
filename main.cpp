@@ -3,6 +3,7 @@
 
 #include "elements.h"
 #include "field.h"
+#include "gol.h"
 
 #define SDL_NOFRAME
 
@@ -77,6 +78,9 @@ int main(int argc, char* argv[])
 
     Field field(renderer);
 
+    // Движок GOL
+    GOL gol(10, 10);
+
     // SDL_Rect rect = {25, 80, 445, 445};
 
     // Переменная содержит события нажатия клавиш
@@ -85,6 +89,14 @@ int main(int argc, char* argv[])
     // Главный цикл
     int mouseX;
     int mouseY;
+
+    // Переменные для GOL
+    int golDalay = 60;
+    int golDalayCounter = 0;
+    int colonySteps = 0;
+
+    bool buttonStartStarted = false;
+
     while (running)
     {
         // Проверка наличия событий в очереди
@@ -106,7 +118,21 @@ int main(int argc, char* argv[])
                 {
                     if(buttonStart.pressed(event.button.x, event.button.y, true))
                     {
-
+                        std::cout << "buttonStart pressed" << std::endl;
+                        if(isStarted || buttonStartStarted)
+                        {
+                            buttonStart.setText("Старт");
+                            isStarted = false;
+                            buttonStartStarted = false;
+                            cells.clear();
+                        }
+                        else
+                        {
+                            // gol.setCells(cells);
+                            buttonStart.setText("Стоп");
+                            isStarted = true;
+                            buttonStartStarted = true;
+                        }
                     }
                     if(buttonNew.pressed(event.button.x, event.button.y, true))
                     {
@@ -118,7 +144,7 @@ int main(int argc, char* argv[])
                         running = false;
                     }
 
-                    // Поле
+                    // Клик по полю
                     if(!isStarted && field.isFieldInFocus(event.button.x, event.button.y))
                     {
                         std::pair<int, int> cell = field.getCellNum(event.button.x, event.button.y);
@@ -134,6 +160,8 @@ int main(int argc, char* argv[])
                         {
                             cells[cell.first].insert(cell.second);
                         }
+
+                        gol.setCells(cells);
                     }
                 }
                 else
@@ -177,8 +205,11 @@ int main(int argc, char* argv[])
 
         interface.applyToRender();
 
+        // Получение текущего расположения клеток от GOL
+
+
         // Поле
-        field.showCells(cells);
+        // field.showCells(gol.getCells());
 
         // Кнопки
         buttonStart.applyToRender();
@@ -200,12 +231,42 @@ int main(int argc, char* argv[])
         // SDL_SetRenderDrawColor(renderer, 30, 50, 200, 100);
         // SDL_RenderFillRect(renderer, &rect);
 
+        if(isStarted)
+        {
+            std::cout << ".";
+            if(golDalayCounter < golDalay)
+            {
+                golDalayCounter++;
+            }
+            else
+            {
+                golDalayCounter = 0;
+                // cells = gol.getCells();
+
+                gol.startCells();
+                gol.printCellsCoords(gol.getCells());
+            }
+
+            if(gol.getCellsNum() == 0)
+            {
+                isStarted = false;
+                colonySteps = 0;
+            }
+            else
+            {
+                colonySteps++;
+            }
+        }
+
+        // Вывод на экран(Получение текущего расположения клеток от GOL)
+        field.showCells(gol.getCells());
+
         // Отображает содержимое рендерара
         SDL_RenderPresent(renderer.get());
+
         // Задержка 16 для получения 60 кадров в секунду. Надо учитывать время выполнения кода?
         SDL_Delay(16);
     }
-
 
     // !!! Обязательно
     // Уничтожение окна перед закрытием приложения

@@ -12,7 +12,8 @@ include_directories(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
 
 add_executable(GameOfLife_SDL2 main.cpp
     elements.h elements.cpp
-    field.h field.cpp)
+    field.h field.cpp
+    gol.h gol.cpp)
 
 target_link_libraries(GameOfLife_SDL2 PRIVATE SDL2::SDL2 SDL2_image::SDL2_image SDL2_ttf::SDL2_ttf ${SDL2_LIBRARIES})
 

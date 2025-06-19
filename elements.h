@@ -67,7 +67,7 @@ class Element //-
     // Цвет
     uint8_t hoverColorParam = 50; // Меняет каждый градиент цвета на укзанное значение, допускается отрицательное. НЕТ ПРОВЕРКИ!
     SDL_Color hoverColor;
-    TTF_Font *hoverFont;
+    TTF_Font *hoverFont = nullptr;
 
     // Фоновое изображение
     SDL_Texture *bgTex = nullptr;
