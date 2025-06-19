@@ -34,6 +34,7 @@ int main(int argc, char* argv[])
     Element interface(0, 0, 100, 60, renderer);
     interface.setColor(255,255,255,255);
     interface.setBgImage("D:/Programming/Sobes/GameOfLife/GOL_SDL2/GameOfLife_SDL2/Res/Background.png");
+    interface.setName("interfase");
 
     Element buttonStart(497, 75, 200, 50, renderer);
     buttonStart.setBgImage("D:/Programming/Sobes/GameOfLife/GOL_SDL2/GameOfLife_SDL2/Res/Button.png");
@@ -42,6 +43,7 @@ int main(int argc, char* argv[])
     buttonStart.setFont("D:/Programming/Sobes/GameOfLife/GOL_SDL2/GameOfLife_SDL2/Res/MISTRAL.TTF", 35);
     buttonStart.setTextColor(85, 60, 40);
     buttonStart.setText("Старт");
+    buttonStart.setName("buttonStart");
 
     Element buttonNew(497, 145, 200, 50, renderer);
     buttonNew.setBgImage("D:/Programming/Sobes/GameOfLife/GOL_SDL2/GameOfLife_SDL2/Res/Button.png");
@@ -50,6 +52,7 @@ int main(int argc, char* argv[])
     buttonNew.setFont("D:/Programming/Sobes/GameOfLife/GOL_SDL2/GameOfLife_SDL2/Res/MISTRAL.TTF", 35);
     buttonNew.setTextColor(85, 60, 40);
     buttonNew.setText("Очистить");
+    buttonNew.setName("buttonNew");
 
     Element buttonExit(497, 480, 200, 50, renderer);
     buttonExit.setBgImage("D:/Programming/Sobes/GameOfLife/GOL_SDL2/GameOfLife_SDL2/Res/Button.png");
@@ -58,6 +61,7 @@ int main(int argc, char* argv[])
     buttonExit.setFont("D:/Programming/Sobes/GameOfLife/GOL_SDL2/GameOfLife_SDL2/Res/MISTRAL.TTF", 35);
     buttonExit.setTextColor(85, 60, 40);
     buttonExit.setText("Выход");
+    buttonExit.setName("buttonExit");
 
     Text textInfo(598, 225, renderer);
     textInfo.setFont("D:/Programming/Sobes/GameOfLife/GOL_SDL2/GameOfLife_SDL2/Res/Inkfree.ttf", 19);
@@ -99,173 +103,194 @@ int main(int argc, char* argv[])
 
     while (running)
     {
-        // Проверка наличия событий в очереди
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type) {
-            case SDL_QUIT: // Закрыть приложение
-                running = false;
-                break;
+        try {
 
-            case SDL_KEYDOWN:
+            // Проверка наличия событий в очереди
+            while (SDL_PollEvent(&event))
+            {
+                switch (event.type) {
+                case SDL_QUIT: // Закрыть приложение
+                    running = false;
+                    break;
 
-                break;
+                case SDL_KEYDOWN:
 
-            case SDL_MOUSEBUTTONDOWN:
-                std::cout << "SDL_MOUSEBUTTONDOWN ";
+                    break;
 
-                if(event.button.button == SDL_BUTTON_LEFT)
-                {
-                    if(buttonStart.pressed(event.button.x, event.button.y, true))
+                case SDL_MOUSEBUTTONDOWN:
+                    std::cout << "SDL_MOUSEBUTTONDOWN ";
+
+                    if(event.button.button == SDL_BUTTON_LEFT)
                     {
-                        std::cout << "buttonStart pressed" << std::endl;
-                        if(isStarted || buttonStartStarted)
+                        if(buttonStart.pressed(event.button.x, event.button.y, true))
                         {
-                            buttonStart.setText("Старт");
-                            isStarted = false;
-                            buttonStartStarted = false;
-                            cells.clear();
-                        }
-                        else
-                        {
-                            // gol.setCells(cells);
-                            buttonStart.setText("Стоп");
-                            isStarted = true;
-                            buttonStartStarted = true;
-                        }
-                    }
-                    if(buttonNew.pressed(event.button.x, event.button.y, true))
-                    {
-                        cells.clear();
-                        std::cout << "buttonNew pressed" << std::endl;
-                    }
-                    if(buttonExit.pressed(event.button.x, event.button.y, true)) // Закрыть приложение
-                    {
-                        running = false;
-                    }
-
-                    // Клик по полю
-                    if(!isStarted && field.isFieldInFocus(event.button.x, event.button.y))
-                    {
-                        std::pair<int, int> cell = field.getCellNum(event.button.x, event.button.y);
-                        if(cells.find(cell.first) != cells.end() && cells.at(cell.first).count(cell.second))
-                        {
-                            cells[cell.first].erase(cell.second);
-                            if(cells[cell.first].empty())
+                            std::cout << "buttonStart pressed" << std::endl;
+                            if(isStarted || buttonStartStarted)
                             {
-                                cells.erase(cell.first);
+                                buttonStart.setText("Старт");
+                                isStarted = false;
+                                buttonStartStarted = false;
+                                cells.clear();
+                            }
+                            else
+                            {
+                                // gol.setCells(cells);
+                                buttonStart.setText("Стоп");
+                                isStarted = true;
+                                buttonStartStarted = true;
                             }
                         }
-                        else
+                        if(buttonNew.pressed(event.button.x, event.button.y, true))
                         {
-                            cells[cell.first].insert(cell.second);
+                            if(!isStarted)
+                            {
+                                cells.clear();
+                                gol.setCells(cells);
+                                std::cout << "buttonNew pressed" << std::endl;
+                            }
+                        }
+                        if(buttonExit.pressed(event.button.x, event.button.y, true)) // Закрыть приложение
+                        {
+                            running = false;
                         }
 
-                        gol.setCells(cells);
+                        // Клик по полю если не запущена GOL
+                        if(!isStarted && field.isFieldInFocus(event.button.x, event.button.y))
+                        {
+                            std::pair<int, int> cell = field.getCellNum(event.button.x, event.button.y);
+                            if(cells.find(cell.first) != cells.end() && cells.at(cell.first).count(cell.second))
+                            {
+                                cells[cell.first].erase(cell.second);
+                                if(cells[cell.first].empty())
+                                {
+                                    cells.erase(cell.first);
+                                }
+                            }
+                            else
+                            {
+                                cells[cell.first].insert(cell.second);
+                            }
+
+                            gol.setCells(cells);
+                        }
                     }
+                    else
+                    {
+
+                    }
+                    break;
+
+                case SDL_MOUSEBUTTONUP:
+                    std::cout << "SDL_MOUSEBUTTONUP ";
+                    if(event.button.button == SDL_BUTTON_LEFT)
+                    {
+                        buttonStart.pressed(event.button.x, event.button.y, false);
+                        buttonNew.pressed(event.button.x, event.button.y, false);
+                        buttonExit.pressed(event.button.x, event.button.y, false);
+                    }
+                    else
+                    {
+
+                    }
+                    break;
+
+                case SDL_MOUSEMOTION:
+                    mouseX = event.motion.x;
+                    mouseY = event.motion.y;
+
+                    buttonStart.hovered(mouseX, mouseY);
+                    buttonNew.hovered(mouseX, mouseY);
+                    buttonExit.hovered(mouseX, mouseY);
+
+                    break;
+                default:
+                    break;
+                }
+            }
+
+            // Выбрать указанному рендереру цвет фона в формате RGB + Альфа канал
+            SDL_SetRenderDrawColor(renderer.get(), 150, 255, 100, 255);
+            // Очистить renderer и загрузить заново
+            SDL_RenderClear(renderer.get());
+
+            interface.applyToRender();
+
+            // Получение текущего расположения клеток от GOL
+
+
+            // Поле
+            // field.showCells(gol.getCells());
+
+            // Кнопки
+            buttonStart.applyToRender();
+            buttonNew.applyToRender();
+            buttonExit.applyToRender();
+
+            // Информационный текст
+            textInfo.applyToRender();
+
+            // textCellsOnField.setText("Клеток на поле: " );
+            textCellsOnField.applyToRender();
+
+            // textCellsOnFieldNum.setText(std::to_string(field.getLifeCellsNum()));
+            // field.getLifeCellsNum();
+            // std::string cellsNum(std::to_string(field.getLifeCellsNum()));
+            textCellsOnFieldNum.setText(std::to_string(field.getLifeCellsNum()));
+            textCellsOnFieldNum.applyToRender();
+
+            // SDL_SetRenderDrawColor(renderer, 30, 50, 200, 100);
+            // SDL_RenderFillRect(renderer, &rect);
+
+            // GOL
+            if(isStarted)
+            {
+                std::cout << ".";
+                if(golDalayCounter < golDalay)
+                {
+                    golDalayCounter++;
                 }
                 else
                 {
+                    golDalayCounter = 0;
+                    // cells = gol.getCells();
 
+                    gol.startCells();
+                    gol.printCellsCoords(gol.getCells());
                 }
-                break;
 
-            case SDL_MOUSEBUTTONUP:
-                std::cout << "SDL_MOUSEBUTTONUP ";
-                if(event.button.button == SDL_BUTTON_LEFT)
+                if(gol.getCellsNum() == 0)
                 {
-                    buttonStart.pressed(event.button.x, event.button.y, false);
-                    buttonNew.pressed(event.button.x, event.button.y, false);
-                    buttonExit.pressed(event.button.x, event.button.y, false);
+                    isStarted = false;
+                    colonySteps = 0;
                 }
                 else
                 {
-
+                    colonySteps++;
                 }
-                break;
-
-            case SDL_MOUSEMOTION:
-                mouseX = event.motion.x;
-                mouseY = event.motion.y;
-
-                buttonStart.hovered(mouseX, mouseY);
-                buttonNew.hovered(mouseX, mouseY);
-                buttonExit.hovered(mouseX, mouseY);
-
-                break;
-            default:
-                break;
             }
-        }
 
-        // Выбрать указанному рендереру цвет фона в формате RGB + Альфа канал
-        SDL_SetRenderDrawColor(renderer.get(), 150, 255, 100, 255);
-        // Очистить renderer и загрузить заново
-        SDL_RenderClear(renderer.get());
+            cells = gol.getCells();
 
-        interface.applyToRender();
+            // Вывод на экран(Получение текущего расположения клеток от GOL)
+            field.showCells(cells);
 
-        // Получение текущего расположения клеток от GOL
-
-
-        // Поле
-        // field.showCells(gol.getCells());
-
-        // Кнопки
-        buttonStart.applyToRender();
-        buttonNew.applyToRender();
-        buttonExit.applyToRender();
-
-        // Информационный текст
-        textInfo.applyToRender();
-
-        // textCellsOnField.setText("Клеток на поле: " );
-        textCellsOnField.applyToRender();
-
-        // textCellsOnFieldNum.setText(std::to_string(field.getLifeCellsNum()));
-        // field.getLifeCellsNum();
-        std::string cellsNum(std::to_string(field.getLifeCellsNum()));
-        textCellsOnFieldNum.setText(cellsNum);
-        textCellsOnFieldNum.applyToRender();
-
-        // SDL_SetRenderDrawColor(renderer, 30, 50, 200, 100);
-        // SDL_RenderFillRect(renderer, &rect);
-
-        if(isStarted)
-        {
-            std::cout << ".";
-            if(golDalayCounter < golDalay)
-            {
-                golDalayCounter++;
-            }
-            else
-            {
-                golDalayCounter = 0;
-                // cells = gol.getCells();
-
-                gol.startCells();
-                gol.printCellsCoords(gol.getCells());
-            }
+            // Отображает содержимое рендерара
+            SDL_RenderPresent(renderer.get());
 
             if(gol.getCellsNum() == 0)
             {
+                buttonStart.setText("Старт");
                 isStarted = false;
-                colonySteps = 0;
+                buttonStartStarted = false;
+                cells.clear();
             }
-            else
-            {
-                colonySteps++;
-            }
+
+            // std::cout << std::endl;
+            // Задержка 16 для получения 60 кадров в секунду. Надо учитывать время выполнения кода?
+            SDL_Delay(16);
+        } catch (...) {
+            std::cout << "!!!   ERROR IN LOOP   !!!" << std::endl;
         }
-
-        // Вывод на экран(Получение текущего расположения клеток от GOL)
-        field.showCells(gol.getCells());
-
-        // Отображает содержимое рендерара
-        SDL_RenderPresent(renderer.get());
-
-        // Задержка 16 для получения 60 кадров в секунду. Надо учитывать время выполнения кода?
-        SDL_Delay(16);
     }
 
     // !!! Обязательно
@@ -277,6 +302,8 @@ int main(int argc, char* argv[])
     // delete renderer;
 
     // Закрытие SDL
+    IMG_Quit();
+    TTF_Quit();
     SDL_Quit();
     return 0;
 }

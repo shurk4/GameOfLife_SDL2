@@ -83,8 +83,6 @@ void Field::showCells(const std::map<int, std::set<int> > &_cells)
                 {
                     std::pair<int, int> cellCoords = getCellCoords(x, y);
 
-
-
                     if(cellCoords.first < fieldXPos_start || cellCoords.first > fieldXPos_end || cellCoords.second < fieldYPos_start || cellCoords.second > fieldYPos_end)
                     {
                         std::cout << "---   Cell position coords wrong cellCoords.first: " << cellCoords.first << " cellCoords.second: " << cellCoords.second << std::endl;
@@ -93,6 +91,7 @@ void Field::showCells(const std::map<int, std::set<int> > &_cells)
 
                     // Анимированные клетки
                     std::shared_ptr<Cell>cell(new Cell(cellCoords.first, cellCoords.second, cellXSize, cellYSize, renderer));
+                    cell->setInfo(x, y, "cell");
 
                     cell->setSprites("D:/Programming/Sobes/GameOfLife/GOL_SDL2/GameOfLife_SDL2/Res/cells.png", 5, 4, 40, 40, 0);
                     // cell->applyToRender();
@@ -109,6 +108,7 @@ void Field::showCells(const std::map<int, std::set<int> > &_cells)
 
     // Проверка удалённых клеток + обновление поля
     lifeCells = 0;
+    cellsToDelete.clear();
 
     // std::cout << "- Field::showCells cellsMap.size: " << cellsMap.size() << std::endl;
     for(auto xCell = cellsMap.begin(); xCell != cellsMap.end(); xCell++)
@@ -132,15 +132,9 @@ void Field::showCells(const std::map<int, std::set<int> > &_cells)
                 if(yCell->second->isDead)
                 {
                     // std::cout << "Field::showCells isDead delete cell x: " << x << " y: " << y << std::endl;
-                    cellsMap[x].erase(y);
-                    if(cellsMap[x].empty())
-                    {
-                        // std::cout << "Field::showCells isDead cellsMap[x].empty: " << x << std::endl;
-                        cellsMap.erase(x);
-                        break;
-                    }
 
-                    continue;
+                    cellsToDelete[x].insert(y); /// <<< ---------------------------------------------------------------- Создаётся список клеток на удаление и удаляется в отдельном циклеcontinue;
+                    // std::cout << "Field::showCells continue" << std::endl;
                 }
                 else
                 {
@@ -151,7 +145,25 @@ void Field::showCells(const std::map<int, std::set<int> > &_cells)
                 // std::cout << "Field::showCells deleted" << std::endl;
             }
 
+            // std::cout << "Field::showCells applyToRender x: " << x << " y: " << y << std::endl;
             yCell->second->applyToRender();
+        }
+    }
+
+    // Удаление мёртвых клеток
+    for(auto xCell = cellsToDelete.begin(); xCell != cellsToDelete.end(); xCell++)
+    {
+        for(auto yCell = xCell->second.begin(); yCell != xCell->second.end(); yCell++)
+        {
+            cellsMap[xCell->first].erase(*yCell);
+        }
+
+        if(cellsMap[xCell->first].empty())
+        {
+            std::cout << "Field::showCells isDead cellsMap[x].empty: " << x << std::endl;
+            cellsMap.erase(xCell->first);
+            // std::cout << "Field::showCells break" << std::endl;
+            // break;
         }
     }
 

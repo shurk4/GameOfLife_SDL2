@@ -27,6 +27,8 @@ class Field
     int lifeCells = 0;
 
     std::vector<std::vector<std::pair<int, int>>> cellsCoords;
+    std::map<int, std::set<int>> cellsToDelete;
+
 
     std::map<int, std::map<int, std::shared_ptr<Cell>>> cellsMap;
     std::vector<Cell*> newCells;

@@ -14,7 +14,7 @@ Element::Element(const int &_xPos, const int &_yPos, const int &_width, const in
 
 Element::~Element()
 {
-    std::cout << "Element::~Element" << std::endl;
+    std::cout << "Element::~Element name: " << name << std::endl;
 
     std::cout << "Element::~Element font" << std::endl;
         // SDL_Destroy
@@ -41,6 +41,9 @@ Element::~Element()
     SDL_DestroyTexture(bgTexPressed);
     // delete bgTexPressed;
 
+    // SDL_Rect_Free(&rect);
+
+    ///--------------------------------------------------------------------
     // try
     // {
 
@@ -112,6 +115,11 @@ void Element::setSize(const int &_width, const int &_height)
     height = _height;
     rect.w = _width;
     rect.h = _height;
+}
+
+void Element::setName(const std::string &_name)
+{
+    name = _name;
 }
 
 void Element::setColor(const uint8_t &_r, const uint8_t &_g, const uint8_t &_b, const uint8_t &_a)
@@ -243,7 +251,7 @@ Cell::Cell(const int &_xPos, const int &_yPos, const int &_width, const int &_he
 
 Cell::~Cell()
 {
-    std::cout << "Cell::~Cell " << std::endl;
+    std::cout << "Cell::~Cell name: " << name << " cellXPos: " << cellXPos << " cellYPos: " << cellYPos << std::endl;
 
     if(spritesTextures != nullptr)
     {
@@ -251,7 +259,7 @@ Cell::~Cell()
         SDL_DestroyTexture(spritesTextures);
     }
     // Element::~Element();
-    std::cout << "Cell::~Cell END" << std::endl;
+    std::cout << "Cell::~Cell DONE" << std::endl;
 }
 
 void Cell::setSprites(const std::string &_path, const int &_spritesXCount, const int &_spritesYCount, const int &_spriteXSize, const int &_spriteYSize, const int &_spriteLine)
@@ -266,6 +274,13 @@ void Cell::setSprites(const std::string &_path, const int &_spritesXCount, const
     currentSprite = 0;
 
     spritesTextures = IMG_LoadTexture(renderer.get(), _path.c_str());
+}
+
+void Cell::setInfo(const int &_cellXPos, const int &_cellYPos, const std::string &_name)
+{
+    cellXPos = _cellXPos;
+    cellYPos = _cellYPos;
+    name = _name;
 }
 
 void Cell::applyToRender()
@@ -372,6 +387,11 @@ void Text::applyToRender()
 
     // Отображение текста в цикле
     SDL_RenderCopy(renderer.get(), fontTex, NULL, &fontRect);
+}
+
+void Text::setName(const std::string &_name)
+{
+    name = _name;
 }
 
 void Text::setTextCentered(bool _isCentered)

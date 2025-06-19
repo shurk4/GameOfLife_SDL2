@@ -100,6 +100,8 @@ public:
     void setPos(const int &_xPos, const int &_yPos);//+
     void setSize(const int &_width, const int &_height);//+
 
+    void setName(const std::string &_name);
+
     void setColor(const uint8_t &_r = 0, const uint8_t &_g = 0, const uint8_t &_b = 0, const uint8_t &_a = 255); //+
 
     // void applyText();
@@ -141,6 +143,10 @@ class Cell : public Element
     Uint32 lastUpdate;
     int currentSprite = 0;
 
+    // Информация о клетке
+    int cellXPos = 0;
+    int cellYPos = 0;
+
 public:
     Cell(const int &_xPos, const int &_yPos, const int &_width, const int &_height, std::shared_ptr<SDL_Renderer>&_renderer);
     ~Cell();
@@ -149,11 +155,15 @@ public:
     bool isLife = false;
     bool isDead = false;
 
+    void setInfo(const int &_cellXPos, const int &_cellYPos, const std::string &_name);
+
     void applyToRender();
 };
 
 class Text
 {
+    std::string name = "";
+
     bool isChanged = false;
     bool isCentered = false;
     bool isRight = false;
@@ -181,6 +191,8 @@ public:
     void setText(const std::string _text);
     void applyTexture();
     void applyToRender();
+
+    void setName(const std::string &_name);
 
     void setTextCentered(bool _isCentered);
     void setTextRight(bool _isRight);
