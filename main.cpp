@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
     bool running = true;
     SDL_Window *window = SDL_CreateWindow("FirstWindow", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screenWidth, screenHeight, 0);
 
-    // SDL_SetWindowBordered(window, SDL_FALSE); // Убрать заголовок окна и рамку
+    SDL_SetWindowBordered(window, SDL_FALSE); // Убрать заголовок окна и рамку
 
     bool isStarted = false;
     std::map<int, std::set<int>> cells;
